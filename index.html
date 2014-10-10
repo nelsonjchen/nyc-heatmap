@@ -227,7 +227,9 @@
         return "translate(" + x(d.date) + ",0)";
       })
       .append("rect")
-      .attr("width", 28)
+      .attr("width", function(d){
+        return (width - margin.left - margin.right)/numDays;
+      })
       .attr("y", function (d) {
 
         return height - y(d.count);
@@ -295,9 +297,16 @@
 
       // Our X scale
       x = d3.time.scale()
-          .domain([new Date(goodData[0].date), d3.time.day.offset(new Date(goodData[goodData.length - 1].date), 1)])
-          .rangeRound([0, width - margin.left - margin.right])
+          .domain([new Date(goodData[0].date), d3.time.day.offset(new Date(goodData[goodData.length - 1].date)-1, 1)])
+          .rangeRound([0, width - margin.left - margin.right]);
+
+          console.log(x);
           //.ticks(d3.time.day, 1);
+
+      //Get total number of days to use in calculating width of bars
+      numDays = Math.floor((new Date(goodData[goodData.length - 1].date)-new Date(goodData[0].date))/86400000);
+
+      console.log("numdays" + numDays );
 
       // Our Y scale
       y = d3.scale.linear()
